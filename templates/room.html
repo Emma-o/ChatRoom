@@ -1,0 +1,183 @@
+{% extends "base.html"  %}
+
+    {% block style %}
+     <link rel="stylesheet" href="{{url_for('static', filename='css/room.css')}}"/>
+    {% endblock %}
+{% block content %}
+<div class="room-layout">
+
+<aside class="sidebar">
+
+    <div class="sidebar-header">
+        <h2>Conference Room</h2>
+
+
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <span class="section-title">
+            🟢 Room
+        </span>
+
+        <p class="section-value">{{ room_code }}</p>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <span class="section-title">
+            👤 You
+        </span>
+
+        <p class="section-value">{{ username }}</p>
+    </div>
+
+    <hr>
+
+<div class="section">
+    <span class="section-title">
+        👥 Participants
+        (<span id="member-count">{{ members|length }}</span>)
+    </span>
+
+    <div id="participants-list">
+        {% for member in members %}
+            <div class="participant-item">
+                <span class="online-dot"></span>
+                <span>{{ member.username }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+    {% if is_host %}
+<section class="waiting-requests">
+    <h3>Waiting requests</h3>
+
+    <div id="waiting-members">
+        {% for member in waiting_members %}
+            <div
+                class="waiting-member"
+                data-member-id="{{ member.id }}"
+            >
+                <span>{{ member.username }}</span>
+
+                <button
+                    type="button"
+                    class="approve-member"
+                    data-member-id="{{ member.id }}"
+                >
+                    Approve
+                </button>
+
+                <button
+                    type="button"
+                    class="reject-member"
+                    data-member-id="{{ member.id }}"
+                >
+                    Reject
+                </button>
+            </div>
+        {% else %}
+            <p class="no-waiting-members">
+                No pending requests
+            </p>
+        {% endfor %}
+
+    </div>
+</section>
+
+    <section class="tables-controls">
+    <h3>Conversation tables</h3>
+
+    <label for="members-per-table">
+        Members per table
+    </label>
+
+    <input
+        id="members-per-table"
+        type="number"
+        min="2"
+        max="10"
+        value="4"
+    >
+
+    <button
+        id="start-tables-btn"
+        type="button"
+    >
+        Create tables
+    </button>
+
+    <p id="tables-error"></p>
+</section>
+{% endif %}
+
+
+
+
+</aside>
+
+            <section class="video-panel">
+                    <div
+        id="tables-container"
+        class="tables-container"
+    ></div>
+        <div id="video-area" class="video-area"></div>
+                    <div class="call-controls">
+        <button id="mic-btn">🎙️ Mute</button>
+        <button id="cam-btn">📷 Camera Off</button>
+        <button id="leave-btn">Leave</button>
+    </div>
+    </section>
+
+
+
+
+    <main class="chat-panel">
+        <div class="chat-header">
+            <h2>Room {{ room_code }}</h2>
+            <span class="status">● Live</span>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="text">
+                <strong>System</strong>
+                Welcome to the room.
+                <span class="muted">Now</span>
+            </div>
+        </div>
+
+        <div class="inputs">
+            <input id="message" placeholder="Write a message..." />
+            <button id="send-btn"  >Send</button>
+        </div>
+    </main>
+
+
+</div>
+
+
+<script  src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+
+
+
+
+<script>
+    window.roomConfig = {
+        username: {{ username | tojson }},
+        roomCode: {{ room_code | tojson }},
+        livekitUrl: {{ livekit_url | tojson }}
+    };
+</script>
+
+
+<script type="module" src="{{ url_for('static', filename='js/room/main.js') }}">
+
+</script>
+
+{% endblock %}

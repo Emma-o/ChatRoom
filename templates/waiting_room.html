@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Waiting Room</title>
+</head>
+
+<body>
+    <main>
+
+
+        <h1>Waiting Room</h1>
+
+        <p>
+            Hello, {{ username }}.
+        </p>
+
+        <p id="waiting-message">
+            You are waiting for the host to approve your request.
+        </p>
+
+        <p>
+            Room code: <strong>{{ room_code }}</strong>
+        </p>
+    </main>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    <script>
+        const socket = io();
+
+        socket.on("member_approved", () => {
+            window.location.reload();
+        });
+
+        socket.on("member_rejected", (data) => {
+            const message = document.getElementById(
+                "waiting-message"
+            );
+
+            message.textContent =
+                data.message || "Your request was rejected.";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+    {% block style %}
+     <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}"/>
+    {% endblock %}
+
+{% block content %}
+
+
+<div class="login-page">
+    <form method="POST" class="login-card">
+        <div class="login-header">
+            <h1>Conference Room</h1>
+            <p>Create or join a real-time room</p>
+        </div>
+
+        <div class="input-group">
+            <p>
+    Welcome,
+    <strong>{{ current_user.username }}</strong>
+</p>
+        </div>
+
+        <div class="input-group">
+            <label>Room code</label>
+            <div class="join-row">
+                <input
+                    type="text"
+                    name="code"
+                    placeholder="Enter room code"
+                    value="{{ code }}"
+                >
+                <button type="submit" name="btnjoin" class="join-btn">
+                    Join
+                </button>
+
+            </div>
+        </div>
+{% if current_user.role == "host" %}
+        <button type="submit" name="btncreate" class="create-btn">
+            Create Room
+        </button>
+{% endif %}
+        <a href="{{ url_for('auth.logout') }}">
+    Logout
+</a>
+
+        {% if error %}
+            <div class="error-box">{{ error }}</div>
+        {% endif %}
+    </form>
+</div>
+
+{% endblock %}

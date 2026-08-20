@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="table-room">
+
+    <header>
+        <h1>{{ table.name }}</h1>
+        <p>Room: {{ room_code }}</p>
+    </header>
+
+    <section>
+        <h2>Participants</h2>
+
+        <ul>
+            {% for member in table.members.values() %}
+                <li>{{ member.username }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section
+        id="video-area"
+        class="video-area"
+    ></section>
+
+    <div class="call-controls">
+        <button
+            id="mic-btn"
+            type="button"
+        >
+            🎙️ Mute
+        </button>
+
+        <button
+            id="cam-btn"
+            type="button"
+        >
+            📷 Camera Off
+        </button>
+
+        <button
+            id="leave-btn"
+            type="button"
+        >
+            Leave
+        </button>
+    </div>
+
+</main>
+
+<script
+    src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+></script>
+
+<script>
+    window.roomConfig = {
+        username: {{ username | tojson }},
+        roomCode: {{ room_code | tojson }},
+        tableId: {{ table.id | tojson }},
+        livekitUrl: {{ livekit_url | tojson }}
+    };
+</script>
+
+<script
+    type="module"
+    src="{{ url_for(
+        'static',
+        filename='js/room/table_main.js'
+    ) }}"
+></script>
+
+{% endblock %}

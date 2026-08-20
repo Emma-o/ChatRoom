@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="host-tables-panel">
+    <h1>Conversation tables</h1>
+
+    <p>Room: {{ room_code }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Table</th>
+                <th>Participants</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for table_id, table in tables.items() %}
+                <tr>
+                    <td>{{ table.name }}</td>
+
+                    <td>
+                        {% for member in table.members %}
+                            {{ member.username }}
+
+                            {% if not loop.last %}
+                                ,
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        <a
+                            href="{{ url_for(
+                                'room.table_room',
+                                room_code=room_code,
+                                table_id=table_id
+                            ) }}"
+                        >
+                            Join
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+{% endblock %}
